@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from scipy.sparse import coo_matrix
+from scipy.sparse import coo_matrix, csr_matrix
 import h5py
 
 # Define functions to read each type of file
@@ -26,9 +26,17 @@ def create_h5_from_files(matrix='file.mtx', column='file_column.txt', row='file_
     row_indices, col_indices, data = read_mtx(matrix)
     sparse_matrix = coo_matrix((data, (row_indices, col_indices)))
     csr_matrix_data = sparse_matrix.tocsr()
+    print('Matrice non transposé:\n')
+    print(csr_matrix_data[:10, :10].toarray())
+    print(f'Shape de la matrice non transposé {csr_matrix_data.shape}')
+    print(f'Taille indptr matrice non transposé \n {len(csr_matrix_data.indptr)}')
     
     # Transpose the CSR matrix
+    print('Matrice transposé:\n')
     csr_matrix_transposed = csr_matrix_data.transpose()
+    print(csr_matrix_transposed[:10, :10].toarray())
+    print(f'Shape de la matrice transposé {csr_matrix_transposed.shape}')
+    print(f'Indptr de transposé\n {len(csr_matrix_transposed.indptr)}')
     
     # Read column and row names
     barcodes_list = np.array(read_names(column), dtype='S')  

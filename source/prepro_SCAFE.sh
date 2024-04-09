@@ -32,4 +32,4 @@ cd /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/code_scbasset
 
 
 ## Do some work:
-python SCAFE_make_csv.py 
+python SCAFE_preprocessing.py 
