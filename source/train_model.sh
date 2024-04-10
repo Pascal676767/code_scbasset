@@ -30,6 +30,7 @@ source /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/Basset_to
 
 ##go to the directory
 cd /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/results_scbasset/enhancer_SCAFE/processed/
+##test
 
 
 
