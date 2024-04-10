@@ -2,6 +2,9 @@ import pybedtools
 import sys
 import os 
 import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+from matplotlib.lines import Line2D
 
 
 def adjust_bed_position(start, end, seq_len = 1344):
@@ -32,7 +35,7 @@ def new_bed(bed_file, output_file=f'int_{sys.argv[1]}'):
     return output_file  # Returns the output file name
 
 
-def display_distribution(data, percentage):
+def global_overlap_distribution(data, percentage):
     """
     Create a histogram of the base pair overlapping in the BED file
     Input: List of sorted overlap values
@@ -45,6 +48,35 @@ def display_distribution(data, percentage):
     plt.xticks(range(0, 1345, 100)) 
     plt.show()
 
+def chr_overlap_distribution(overlap_chr, percentage):
+    """
+    Create a density plot for the base pair overlap distribution from a BED file for each chromosome.
+    Input: Dictionary with 'chrom' as keys and [list of values] as values.
+    Output: Density plot for each chromosome's base pair overlap.
+    """
+    plt.figure(figsize=(10, 6))
+    palette = sns.color_palette("husl", len(overlap_chr))
+    
+    # Loop through each chromosome and its corresponding values in the dictionary
+    legend_elements = []  # list to hold the legend elements
+    for i, (chrom, values) in enumerate(overlap_chr.items()):
+        # Convert values to numeric data
+        values_numeric = pd.to_numeric(values)
+        
+        # Plot the density curve with a unique color for each chromosome
+        sns.histplot(values_numeric, kde=True, color=palette[i], element='poly', 
+                     fill=False, linewidth=2, alpha=0, label=chrom)
+        # Create a legend element for each chromosome
+        legend_elements.append(Line2D([0], [0], color=palette[i], lw=2, label=chrom))
+
+    # Create the legend from the custom legend elements
+    plt.legend(handles=legend_elements, title='Chromosome')
+
+    plt.xlabel('Number of Base Pair Overlap')
+    plt.ylabel('Frequency')
+    plt.title(f'Overlap Distribution ({percentage}%) per Chromosome')
+    plt.xticks(range(0, 1345, 100)) 
+    plt.show()
 
 
 def calculate_overlap_percentage(bed_file):
@@ -64,14 +96,20 @@ def calculate_overlap_percentage(bed_file):
 
     # list to store the bp overlap
     overlap_bp = []
+    overlap_chr = {}
 
     # Iterate over overlap results and add unique regions to the set
     for overlap in overlaps:
-        chrom, start1, end1, _, start2, end2, _ = overlap.fields[0:7]
+        chrom, start1, end1, _, start2, end2, overlap_size = overlap.fields[0:7]
         if start1 != start2 or end1 != end2:  # Make sure it's not the same region overlapping itself
             regions_with_overlap.add((chrom, start1, end1))
             regions_with_overlap.add((chrom, start2, end2))
-            overlap_bp.append(overlap.fields[6])
+            if chrom in overlap_chr:   
+                overlap_chr[chrom].append(overlap_size)
+                overlap_chr[chrom].sort(key=int)
+            else:
+                overlap_chr[chrom] = [overlap_size]
+            overlap_bp.append(overlap_size)
     
     overlap_bp = sorted(overlap_bp,  key=int)
 
@@ -81,7 +119,8 @@ def calculate_overlap_percentage(bed_file):
 
     overlap_percentage = (num_regions_with_overlap / total_regions) * 100 if total_regions > 0 else 0
 
-    display_distribution(overlap_bp, round(overlap_percentage, 2))
+    global_overlap_distribution(overlap_bp, round(overlap_percentage, 2))
+    chr_overlap_distribution(overlap_chr,round(overlap_percentage, 2) )
     
     print(f'% of overlapping: {round(overlap_percentage, 2)}')
     
