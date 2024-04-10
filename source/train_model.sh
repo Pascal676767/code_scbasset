@@ -7,7 +7,7 @@
 #SBATCH --account=ec31
 
 # Wall time limit:
-#SBATCH --time=09:00:00
+#SBATCH --time=22:00:00
 
 #SBATCH --mem=8G
 #SBATCH --partition=accel --gres=gpu:1
@@ -29,10 +29,10 @@ module list
 source /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/Basset_tool/bin/activate
 
 ##go to the directory
-cd /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/results_scbasset/enhancer_final/processed/
+cd /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/results_scbasset/enhancer_SCAFE/processed/
 
 
 
 ## Do some work:
 
-python /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/code_scbasset/source/scbasset_train.py --input_folder filtered/  --epochs  1000 --out_path ../../../results_scbasset/enhancer_final/model/l2_regularization/double/filtered
+python /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/code_scbasset/source/scbasset_train.py --input_folder not_filtered/  --epochs  1000 --out_path ../../../results_scbasset/enhancer_SCAFE/model/l2_regularization/0_5/not_filtered

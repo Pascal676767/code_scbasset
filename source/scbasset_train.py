@@ -162,7 +162,7 @@ def main():
         validation_data=val_ds)
     pickle.dump(history.history, open('%s/history.pickle'%out_dir, 'wb'))
     
-###################### Train predictin ##########################
+###################### Train prediction ##########################
     """
 
     train_probabilities = model.predict(train_ds)

@@ -26,9 +26,9 @@ module list
 source /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/Basset_tool/bin/activate
 
 ##go to the directory
-cd /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/results_scbasset/promotor_final/processed/filtered_controle
+cd /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/results_scbasset/enhancer_SCAFE/processed/not_filtered
 
 
 
 ## Do some work:
-python /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/scBasset/bin/scbasset_preprocess.py --ad_file ../../data/filtered_controle/cage_promotor_ad.h5ad --input_fasta /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/scBasset/data/hg38.fa
+python /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/scBasset/bin/scbasset_preprocess.py --ad_file ../../data/not_filtered/cage_enhancer_ad.h5ad --input_fasta /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/scBasset/data/hg38.fa
