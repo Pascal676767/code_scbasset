@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 from matplotlib.lines import Line2D
+import re
 
 
 def adjust_bed_position(start, end, seq_len = 1344):
@@ -48,6 +49,11 @@ def global_overlap_distribution(data, percentage):
     plt.xticks(range(0, 1345, 100)) 
     plt.show()
 
+def natural_sort_key(s):
+    """Clé de tri naturel pour trier les chromosomes par ordre numérique."""
+    return [int(text) if text.isdigit() else text.lower() for text in re.split('([0-9]+)', s)]
+
+
 def chr_overlap_distribution(overlap_chr, percentage):
     """
     Create a density plot for the base pair overlap distribution from a BED file for each chromosome.
@@ -56,10 +62,13 @@ def chr_overlap_distribution(overlap_chr, percentage):
     """
     plt.figure(figsize=(10, 6))
     palette = sns.color_palette("husl", len(overlap_chr))
+
+    sorted_chromosomes = sorted(overlap_chr.keys(), key=natural_sort_key)
     
     # Loop through each chromosome and its corresponding values in the dictionary
     legend_elements = []  # list to hold the legend elements
-    for i, (chrom, values) in enumerate(overlap_chr.items()):
+    for i, chrom in enumerate(sorted_chromosomes):
+        values = overlap_chr[chrom]
         # Convert values to numeric data
         values_numeric = pd.to_numeric(values)
         
@@ -116,7 +125,7 @@ def calculate_overlap_percentage(bed_file):
     # Calculate the percentage of regions that have overlap
     num_regions_with_overlap = len(regions_with_overlap)
     total_regions = len(a)
-
+    print(overlap_bp)
     overlap_percentage = (num_regions_with_overlap / total_regions) * 100 if total_regions > 0 else 0
 
     global_overlap_distribution(overlap_bp, round(overlap_percentage, 2))
