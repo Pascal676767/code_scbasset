@@ -65,6 +65,9 @@ def create_bed_file(df_peak_position, output_file='peaks.bed'):
 
     print(f"Successfully created BED file: {output_file}")
 
+def number_features_info(ad):
+    print(f'Number of features: {ad.shape[1]} \nNumber of patient: {ad.shape[0]}')
+
 
 def extract_info(data, df_peak_position):
     # Extract the barcodes (patient IDs), features (peaks), and count matrix from the CSV file.
@@ -82,8 +85,7 @@ def extract_info(data, df_peak_position):
     # Count matrix
     data_matrix = data.iloc[:, 1:].values
     data_matrix_transposed = np.transpose(data_matrix)  # Barcodes (patients) in rows and peaks in columns
-    print("Number of barcodes (patients): ", data_matrix_transposed.shape[0])
-    print("Number of peaks: ", data_matrix_transposed.shape[1])
+    number_features_info(data_matrix_transposed)
 
     return barcodes_list, data_matrix_transposed, features_list, feature_types_data, genome_data
 
@@ -115,10 +117,10 @@ def create_count_matrix_h5(barcodes_list, data_matrix_transposed, features_list,
         
         # Invert the dimensions of the matrix
         data_matrix_shape = data_csr.shape
-        #data_matrix_shape_inverse = (data_matrix_shape[1], data_matrix_shape[0])
+        data_matrix_shape_inverse = (data_matrix_shape[1], data_matrix_shape[0])
         
         # Write the inverted shape into the /matrix/shape dataset
-        grp_matrix.create_dataset('shape', data=data_matrix_shape)
+        grp_matrix.create_dataset('shape', data=data_matrix_shape_inverse)
         
         # Write the indices into the /matrix/indices dataset
         grp_matrix.create_dataset('indices', data=data_csr.indices)
@@ -180,6 +182,39 @@ def shuffle(csv_file_path):
     return df
 
 
+
+
+def filtering(count_matrix_file, bed_file, filter_rate):
+
+    # read count matrix and bed file (peaks)
+    peak = pd.read_csv(bed_file, sep='\t', names=['chr','start','end', 'strand'])
+    ad = sc.read_10x_h5(count_matrix_file, gex_only=False)
+    print('Befor filtering')
+    number_features_info(ad)
+
+    ######## filtering of peaks #########
+    ad_cage = ad[:, ad.var['feature_types']=='Peaks']
+    ad_cage.var['chr'] = peak['chr'].values
+    ad_cage.var['start'] = peak['start'].values
+    ad_cage.var['end'] = peak['end'].values
+    ad_cage.var['strand'] = peak['strand'].values
+
+    sc.pp.filter_cells(ad_cage, min_genes=0)
+    sc.pp.filter_genes(ad_cage, min_cells=0)
+
+    # a peak need to be accessible in _% cells
+    thres = int(ad.shape[0]*filter_rate)
+    ad_cage = ad_cage[:, ad_cage.var['n_cells']>thres]
+    print('After peak filtering')
+    number_features_info(ad_cage)
+
+    ######## filtering of chromosome ########
+    chrs = ['chr'+str(i) for i in range(1,23)] + ['chrX', 'chrY']
+    ad_cage = ad_cage[:, ad_cage.var['chr'].isin(chrs)]
+    print('After chr filtering')
+    number_features_info(ad_cage)
+    
+    return ad_cage
 
 
 
