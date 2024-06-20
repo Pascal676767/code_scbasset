@@ -32,4 +32,4 @@ cd /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/ex_shap
 
 
 ## Do some work:
-python shap_multiprocessing.py data/enhancer/test_seqs.h5 data/enhancer/best_model.h5 5 1000 batch_enhancer_shuffle100_v2
+python ../code_scbasset/source/DeepSHAP/shap_multiprocessing.py data/enhancer/test_seqs.h5 data/enhancer/best_model.h5 5 1000 batch_enhancer_shuffle100_v2

@@ -50,7 +50,11 @@ def global_overlap_distribution(data, percentage):
     plt.show()
 
 def natural_sort_key(s):
-    """Clé de tri naturel pour trier les chromosomes par ordre numérique."""
+    """
+    Natural sort key for sorting strings containing numbers.
+    Input:The string to be sorted.
+    Ouptut: list of chr sorted by numerical value
+    """
     return [int(text) if text.isdigit() else text.lower() for text in re.split('([0-9]+)', s)]
 
 

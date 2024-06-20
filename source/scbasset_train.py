@@ -16,6 +16,7 @@ import gc
 from datetime import datetime
 from scbasset.utils import *
 from scbasset.basenji_utils import *
+from sequential_model import make_sequential_model
 
 def make_parser():
     parser = configargparse.ArgParser(
@@ -105,6 +106,9 @@ def main():
     
     # build model
     model = make_model(bottleneck_size, n_cells)
+
+    # build sequential model 
+    #model = make_sequential_model(bottleneck_size,n_cells)
     
     # load model if provided trained model
     if trained_model is not None:
@@ -139,6 +143,9 @@ def main():
 
             tf.keras.callbacks.EarlyStopping(monitor='auc', min_delta=1e-6,
                                              mode='max', patience=50, verbose=1),
+            # tf.keras.callbacks.EarlyStopping(monitor='val_loss', min_delta=1e-4,
+            #                                  mode='min', patience=15, verbose=1),
+
         ]
 
     else:
@@ -152,6 +159,8 @@ def main():
                                                monitor='auc', mode='max'),
             tf.keras.callbacks.EarlyStopping(monitor='auc', min_delta=1e-6,
                                              mode='max', patience=50, verbose=1),
+            # tf.keras.callbacks.EarlyStopping(monitor='val_loss', min_delta=1e-4,
+            #                                  mode='min', patience=15, verbose=1),
         ]
 
     # train the model
