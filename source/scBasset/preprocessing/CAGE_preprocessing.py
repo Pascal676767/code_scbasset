@@ -10,18 +10,6 @@ import sys
 from preprocessing_function import *
 
 
-import csv
-import pandas as pd
-from itertools import islice
-import h5py
-import numpy as np
-from scipy import sparse
-import re
-import scanpy as sc
-import sys
-from preprocessing_function import *
-
-
 def CAGE_preprocessing(csv_file, output_bed_file, output_count_matrix, output_count_matrix_filtered, filter_rate):
     """
     Input: CSV file (row: DNA position, column: sample)
