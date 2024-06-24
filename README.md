@@ -1,45 +1,28 @@
 # code_scbasset
 
+# Architecture
+
+
 # Source Folder
 
-The source folder contains two main folder and several bash script
+
 
 ## Preprocessing Folder
 
-This folder contains a number of jupyter notebooks for pre-processing data in order to train the model. Below you will find descriptions of each notebook:
+This folder contains a number of python scripts for pre-processing data in order to train the model. Below you will find descriptions of each notebook:
 
-### CAGE_preprocessing.ipynb
-- **Description**: Converts an original CSV file (containing enhancer and promoter data) into a BED file listing the peak regions (promoter and enhancer). Also generates an H5 file containing the count matrix.
+### CAGE_preprocessing.py
+- **Description**: Converts an original CSV file (row: DNA position, column: sample), containing enhancer and promoter data, into a BED file listing the promoter or enhancer regions Also generates an H5 file containing the count matrix and an other H5 file with the coutn matrx filtered (rate to defined).
 - **Input**: CSV file (enhancer and promoter).
 - **Output**:
   - BED file of peaks.
   - H5 file (count matrix).
-
-### Concat_enhancer_promoteur.ipynb
-- **Description**: Concatenates two CSV files, typically those of promoters and enhancers.
-- **Input**: Two CSV files (promoter and enhancer).
-- **Output**: A combined CSV file.
+  - H5 file (coutn matrix filtered).
 
 ### Controle_shuffle.ipynb
 - **Description**: Randomly shuffles the values in the original CSV file to create a control.
 - **Input**: Original CSV file.
 - **Output**: Shuffled CSV file.
-
-### SCAFE_preprocessing.py
-- **Description**: From a sparse matrix and two text files containing column and row information, creates an H5 file containing the count matrix.
-- **Input**:
-  - Sparse matrix.
-  - Text files for columns and rows.
-- **Output**: H5 file (count matrix).
-
-### Testing-random_stuff.ipynb
-- **Description**: A no-op script intended for various tests.
-- **Function**: None (testing purposes only).
-
-### make_anndata_CAGE.ipynb
-- **Description**: Generates the final file necessary for creating training files. Allows filtering of the number of enhancers, promoters, etc.
-- **Function**: Data preparation for training.
-
 
 ## Analysis Folder
 
