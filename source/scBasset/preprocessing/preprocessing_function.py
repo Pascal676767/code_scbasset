@@ -7,6 +7,24 @@ from scipy import sparse
 import re
 import scanpy as sc
 
+
+def open_verif_csv(csv_file):
+    with open(csv_file, 'r') as file:
+        reader = csv.reader(file)
+        first_line = next(reader)
+        second_line = next(reader)
+
+        # Filter out empty column names or those containing only spaces
+        non_empty_first_line = [col for col in first_line if col.strip()]
+        
+        # Check if the number of non-empty column names is less than the number of columns in the data
+        if len(non_empty_first_line) < len(second_line):
+            raise ValueError("The number of column names is less than the number of columns in the data. Every column should have a name, including the column with the DNA position.")
+        else:
+            # Load the CSV file into a DataFrame
+            data = pd.read_csv(csv_file, sep=',', header=0)
+            return data
+
 def adjust_single_coordinates(position):
     """
     If the end is missing in the coordinate, add the start as the end.
@@ -43,8 +61,9 @@ def adjust_coordinates(data):
     Output: data frame with adjusted coordinates
     """
     df_adjust_coordinates = pd.DataFrame(data)
+    first_column_name = df_adjust_coordinates.columns[0]
     # Insert the new column.
-    df_adjust_coordinates.insert(1, 'adjusted_coordinate', data['Region'].apply(adjust_single_coordinates))
+    df_adjust_coordinates.insert(1, 'adjusted_coordinate', data[first_column_name].apply(adjust_single_coordinates))
     return df_adjust_coordinates
 
 
@@ -66,7 +85,7 @@ def create_bed_file(df_peak_position, output_file='peaks.bed'):
     print(f"Successfully created BED file: {output_file}")
 
 def number_features_info(ad):
-    print(f'Number of features: {ad.shape[1]} \nNumber of patient: {ad.shape[0]}')
+    print(f'Number of features: {ad.shape[1]} \nNumber of patient: {ad.shape[0]}\n')
 
 
 def extract_info(data, df_peak_position):
@@ -85,7 +104,6 @@ def extract_info(data, df_peak_position):
     # Count matrix
     data_matrix = data.iloc[:, 1:].values
     data_matrix_transposed = np.transpose(data_matrix)  # Barcodes (patients) in rows and peaks in columns
-    number_features_info(data_matrix_transposed)
 
     return barcodes_list, data_matrix_transposed, features_list, feature_types_data, genome_data
 
@@ -173,7 +191,7 @@ def Visualize_h5_file(file_name, group):
 
 
 def shuffle(csv_file_path):
-    df = pd.read_csv(csv_file_path)
+    df = open_verif_csv(csv_file_path)
     # Exclude column names
     data_matrix = df.iloc[:, 1:].values
     # Random shuffle
@@ -189,7 +207,7 @@ def filtering(count_matrix_file, bed_file, filter_rate):
     # read count matrix and bed file (peaks)
     peak = pd.read_csv(bed_file, sep='\t', names=['chr','start','end', 'strand'])
     ad = sc.read_10x_h5(count_matrix_file, gex_only=False)
-    print('Befor filtering')
+    print('### Befor filtering ###')
     number_features_info(ad)
 
     ######## filtering of peaks #########
@@ -205,30 +223,17 @@ def filtering(count_matrix_file, bed_file, filter_rate):
     # a peak need to be accessible in _% cells
     thres = int(ad.shape[0]*filter_rate)
     ad_cage = ad_cage[:, ad_cage.var['n_cells']>thres]
-    print('After peak filtering')
+    print('### After features filtering ###')
     number_features_info(ad_cage)
 
     ######## filtering of chromosome ########
     chrs = ['chr'+str(i) for i in range(1,23)] + ['chrX', 'chrY']
     ad_cage = ad_cage[:, ad_cage.var['chr'].isin(chrs)]
-    print('After chr filtering')
+    print('### After chr filtering ###')
     number_features_info(ad_cage)
     
     return ad_cage
 
-
-def concat_csv_file(file1, file2):
-    """
-    Input: two csv file
-    Output: merge csv file
-    """
-    data_file1 = pd.read_csv(file1, sep = ',', header = 0)
-    data_file2 = pd.read_csv(file2, sep = ',', header = 0)
-    
-    if (data_file1.columns == data_file2.columns).all():
-        data_concat = pd.concat([data_file1, data_file2], ignore_index=True)
-        return data_concat
-        
 
 
 
