@@ -1,16 +1,13 @@
-import csv
-import pandas as pd
-from itertools import islice
-import h5py
-import numpy as np
-from scipy import sparse
-import re
-import scanpy as sc
-import sys
+import argparse
 from preprocessing_function import *
+import warnings
+
+# Ignore all warnings
+warnings.filterwarnings('ignore')
 
 
-def CAGE_preprocessing(csv_file, output_bed_file, output_count_matrix, output_count_matrix_filtered, filter_rate):
+
+def CAGE_preprocessing(csv_file, filter_rate, output_bed_file='./cage.bed', output_count_matrix='./count_matrix.h5', output_count_matrix_filtered='./count_matrix_filtered.h5'):
     """
     Input: CSV file (row: DNA position, column: sample)
     Output: Bed file with the DNA position, count matrix (h5 file) and count matrix filtered (h5 file)
@@ -36,29 +33,24 @@ def CAGE_preprocessing(csv_file, output_bed_file, output_count_matrix, output_co
     ad_cage = filtering(output_count_matrix, output_bed_file, filter_rate)
     ad_cage.write(output_count_matrix_filtered)
 
-def print_help():
-    help_text = """
-    Usage: python script.py <csv_file> <output_bed_file> <output_count_matrix> <output_count_matrix_filtered> <filter_rate>
-    
-    Arguments:
-    csv_file                  Path to the input CSV file.
-    output_bed_file           Path to the output BED file.
-    output_count_matrix       Path to the output count matrix H5 file.
-    output_count_matrix_filtered Path to the output filtered count matrix H5 file.
-    filter_rate               Filtering rate for the count matrix.
-    
-    Options:
-    --help                    Show this help message and exit.
-    """
-    print(help_text)
+def main():
+    parser = argparse.ArgumentParser(description='Preprocess CAGE data from a CSV file and generate BED and H5 files.')
+    parser.add_argument('csv_file', type=str, help='Path to the input CSV file.')
+    parser.add_argument('filter_rate', type=float, help='Filtering rate for the count matrix.')
+    parser.add_argument('--output_bed_file', type=str, default='./cage.bed', help='Path to the output BED file. Default is "./cage.bed".')
+    parser.add_argument('--output_count_matrix', type=str, default='./count_matrix.h5', help='Path to the output count matrix H5 file. Default is "./count_matrix.h5".')
+    parser.add_argument('--output_count_matrix_filtered', type=str, default='./count_matrix_filtered.h5', help='Path to the output filtered count matrix H5 file. Default is "./count_matrix_filtered.h5".')
+
+
+    args = parser.parse_args()
+
+    CAGE_preprocessing(
+        csv_file=args.csv_file,
+        filter_rate=args.filter_rate,
+        output_bed_file=args.output_bed_file,
+        output_count_matrix=args.output_count_matrix,
+        output_count_matrix_filtered=args.output_count_matrix_filtered
+    )
 
 if __name__ == "__main__":
-    if '--help' in sys.argv or len(sys.argv) != 6:
-        print_help()
-    else:
-        csv_file = sys.argv[1]
-        output_bed_file = sys.argv[2]
-        output_count_matrix = sys.argv[3]
-        output_count_matrix_filtered = sys.argv[4]
-        filter_rate = float(sys.argv[5])  # Convert the filter rate to a float
-        CAGE_preprocessing(csv_file, output_bed_file, output_count_matrix, output_count_matrix_filtered, filter_rate)
+    main()
