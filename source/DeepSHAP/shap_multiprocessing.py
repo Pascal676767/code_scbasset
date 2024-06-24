@@ -122,7 +122,7 @@ def task(args):
     It then formats them in the correct dimension so that they can be saved 
     with the save_incremental_npz function. 
     """
-    i, model, output_folder = args
+    i, model = args
     shapley_values, seqs_to_explain = shap_values(i, model)
 
     shapley_values = np.squeeze(shapley_values)
@@ -131,35 +131,41 @@ def task(args):
     shapley_values = np.expand_dims(shapley_values, axis=0)
     seqs_to_explain = np.expand_dims(seqs_to_explain, axis=0)
 
-    shapley_filename = f"{output_folder}/shapley_values.npz"
-    seqs_filename = f"{output_folder}/seqs_to_explain.npz"
-
-    save_incremental_npz(shapley_values, seqs_to_explain, shapley_filename, seqs_filename)
-
     return shapley_values, seqs_to_explain
 
-def shap_sequence_analysis(data_path, model_path, process,  output_folder, data_size):
+def shap_sequence_analysis(data_path, model_path, process, output_folder, data_range):
     """
     Input : 
     - Path to the dataset containing the sequences to be analyzed
     - Path to trained model
     - Number of tasks to be run in parallel (see note)
     - Output folder containing npz files
-    - Number of sequences to be analyzed 
+    - Tuple (start, end) for the range of sequences to be analyzed 
     """
 
     # Data
     data = open_file(data_path)
-    data_one_hot = one_hot_encode(data[:data_size])
+    start, end = data_range
+    data_one_hot = one_hot_encode(data[start:end])
 
     with multiprocessing.Pool(process) as pool:
         i = 1
-        for shapley_values, seqs_to_explain in tqdm(pool.imap_unordered(task, [(seq, model_path, output_folder) for seq in data_one_hot], chunksize=1), total=len(data_one_hot), leave=True):
+        for shapley_values, seqs_to_explain in tqdm(pool.imap_unordered(task, [(seq, model_path) for seq in data_one_hot], chunksize=1), total=len(data_one_hot), leave=True):
             print('Sequence:', i)
             i += 1
+            shapley_filename = f"{output_folder}/shapley_values.npz"
+            seqs_filename = f"{output_folder}/seqs_to_explain.npz"
+
+            save_incremental_npz(shapley_values, seqs_to_explain, shapley_filename, seqs_filename)
 
             gc.collect()
 
 if __name__ == "__main__":
     multiprocessing.set_start_method('forkserver')
-    shap_sequence_analysis(data_path=sys.argv[1], model_path=sys.argv[2], process=int(sys.argv[3]), data_size=int(sys.argv[4]), output_folder=sys.argv[5])
+    data_path = sys.argv[1]
+    model_path = sys.argv[2]
+    process = int(sys.argv[3])
+    start_idx = int(sys.argv[4])
+    end_idx = int(sys.argv[5])
+    output_folder = sys.argv[6]
+    shap_sequence_analysis(data_path=data_path, model_path=model_path, process=process, output_folder=output_folder, data_range=(start_idx, end_idx))

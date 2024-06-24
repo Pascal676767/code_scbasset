@@ -1,16 +1,15 @@
 #!/bin/bash
 
 # Job name:
-#SBATCH --job-name=enh_2051_3500
+#SBATCH --job-name=modisco
 
 # Project:
 #SBATCH --account=ec31
 
 # Wall time limit:
-#SBATCH --time=90:00:00
-#SBATCH --ntasks=6
-#SBATCH --cpus-per-task=1
-#SBATCH --mem=240G
+#SBATCH --time=01:00:00
+
+#SBATCH --mem=32G
 
 # Set the output of the slurmfile
 #SBATCH --output=/fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/results_scbasset/log/output-%j.txt
@@ -27,9 +26,13 @@ module list
 source /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/Basset_tool/bin/activate
 
 ##go to the directory
-cd /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/ex_shap
+cd /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/ex_shap/batch_enhancer_shuffle100_v2
+##test
 
 
 
 ## Do some work:
-python ../code_scbasset/source/DeepSHAP/shap_multiprocessing.py data/enhancer/test_seqs.h5 data/enhancer/best_model.h5 5 2051 3500 batch_enhancer_shuffle100_v2
+
+modisco motifs -s seqs_to_explain_concatened.npz -a  shapley_values_concatened.npz -n 2000 -o modisco_results.h5
+
+# modisco report -i modisco_results.h5 -o report/ -s report/ -m ../data/motifs.txt
