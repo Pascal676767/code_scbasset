@@ -1,5 +1,11 @@
 from analyse_function import train_validation_comparison
+import pickle
 import argparse
+
+"""
+Script to plot the AUC and loss curves for the training and validation data from the history.pickle file generated during model training.
+Takes the pickle file as input and outputs a PNG with a plot for the AUC and a plot for the Loss.
+"""
 
 def main():
     parser = argparse.ArgumentParser(description='Compare the training and validation metrics (Loss and AUC).')
