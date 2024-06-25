@@ -1,20 +1,12 @@
-# import anndata
+import anndata
 import tensorflow as tf
-# import numpy as np
-# import h5py
-import matplotlib.pyplot as plt
-# import os
-# import math
+import numpy as np
 import pickle
-# import seaborn as sns
-# import scipy
-# import sys
+import scipy
 import scanpy as sc
 import pandas as pd
 from scbasset.utils import *
 import pybedtools
-import sys
-import os 
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
@@ -23,16 +15,22 @@ import re
 tf.get_logger().setLevel('ERROR')
 
 
+
+#####################################
+############# AUC_Loss ##############
+#####################################
+
+
 def plot_metric(train_metric, val_metric, title, ylabel, subplot_position):
     """
-    Plot the training and validation metrics.
-    
-    Parameters:
-    - metric: list of training metric values.
-    - val_metric: list of validation metric values.
-    - title: title of the plot.
-    - ylabel: label for the y-axis.
-    - subplot_position: position of the subplot in the figure.
+        Plot the training and validation metrics.
+        
+        Parameters:
+        - metric: list of training metric values.
+        - val_metric: list of validation metric values.
+        - title: title of the plot.
+        - ylabel: label for the y-axis.
+        - subplot_position: position of the subplot in the figure.
     """
     plt.subplot(2, 1, subplot_position)
     plt.plot(train_metric, label='Train', color='orange')
@@ -44,9 +42,25 @@ def plot_metric(train_metric, val_metric, title, ylabel, subplot_position):
     plt.legend()
     plt.grid(True)
 
-def train_validation_comparison(file_path, title_loss ='Comparison between train and validation Loss' , title_auc = 'Comparison between train and validation AUC', output_file ='./AUC_Loss.png'):
+
+def train_validation_comparison(file_path, title_loss ='Comparison between train and validation Loss' , 
+                                title_auc = 'Comparison between train and validation AUC', output_file ='./AUC_Loss.png'):
+    """
+        Plot the AUC and Loss for both validation and training data
+
+        Parameters:
+        - file_path: history.pickle file
+        - title_loss: title for the Loss plot
+        - title_auc: title for the AUC plot
+        - output_file: name of the output PNG file with the plots
+
+        Output:
+        - PNG file
+    """
+
+
+    # Load the data from the pickle file
     with open(file_path, 'rb') as f:
-        # Load the data from the pickle file
         data = pickle.load(f)
 
     # Extract the data
@@ -64,33 +78,43 @@ def train_validation_comparison(file_path, title_loss ='Comparison between train
     # Plot for the Loss
     plot_metric(loss, val_loss, title_loss, 'Loss', 2)
 
-    # Adjust layout
     plt.tight_layout()
 
-    # Save the plot to a file
     plt.savefig(output_file, format='png')
 
 
 
+
+#################################
+########### Embedding ###########
+#################################
+
 def load_model(ad, trained_model):
     """
-    Input: anndata file and model weight
+        Create the model and load the corresponding weights
+
+        Parameters:
+        - ad: h5 file with features and samples
+        - trained_model: weights of the trained model
+
+        Output:
+        - Model with weights
     """
-    # load model
+
     model = make_model(32, ad.shape[0], show_summary=False)
     model.load_weights(trained_model)
     return model
 
-def intercept_depth(ad, model, type_data):
-    intercept = get_intercept(model) # get_intercept function
-    sc.pp.filter_cells(ad, min_counts=0)
+# def intercept_depth(ad, model, type_data):
+#     intercept = get_intercept(model) # get_intercept function
+#     sc.pp.filter_cells(ad, min_counts=0)
 
-    f, ax = plt.subplots(figsize=(4,4))
-    r = scipy.stats.pearsonr(intercept, np.log10(ad.obs['n_genes']))[0]
-    sns.scatterplot(x=intercept, y=np.log10(ad.obs['n_genes']), ax=ax)
-    ax.set_xlabel('intercept')
-    ax.set_ylabel('log10(n_peaks)')
-    ax.set_title(f'{type_data}_Pearson R: %.3f'%r)
+#     f, ax = plt.subplots(figsize=(4,4))
+#     r = scipy.stats.pearsonr(intercept, np.log10(ad.obs['n_genes']))[0]
+#     sns.scatterplot(x=intercept, y=np.log10(ad.obs['n_genes']), ax=ax)
+#     ax.set_xlabel('intercept')
+#     ax.set_ylabel('log10(n_peaks)')
+#     ax.set_title(f'{type_data}_Pearson R: %.3f'%r)
 
 def embedding(model, type_data, results_path):
     proj = get_cell_embedding(model) # get_cell_embedding function
@@ -143,12 +167,23 @@ def add_hormone_info(ad, hormone_path):
     ad.obs['Hormone'] = [sample_class_map.get(sample_id, None) for sample_id in ad.obs.index]
 
 
+#############################
+######### Overlapp ##########
+#############################
+
+
 def adjust_bed_position(start, end, seq_len = 1344):
     """
-    Adjust the position of the start and end in the BED file to make it 1344 bp long
-    Input: A position with a start and an end
-    Output: Adjusted position
+        Adjust the position of the start and end in the BED file to make it 1344 bp long
+
+        Parameters:
+        - start: start of the DNA position
+        - end: end of the DNA position
+
+        Output:
+        - Adjusted positions
     """
+
     mid = (start + end) // 2
     seq_start = mid - seq_len // 2
     seq_end = seq_start + seq_len
@@ -158,10 +193,16 @@ def adjust_bed_position(start, end, seq_len = 1344):
 
 def new_bed(bed_file, output_file=f'./intermediate_file.bed'):
     """
-    Create a new BED file with adjusted positions
-    Input: BED file
-    Output: New BED file
+        Create a new BED file with adjusted positions
+
+        Parameters:
+        - bed_file: BED file
+        - output_file: intermediate BED file name
+
+        Output:
+        - BED file with adjusted positions
     """
+
     a = pybedtools.BedTool(bed_file)
     with open(output_file, 'w') as int_bed: 
         ### Write new intermediate bedfile
@@ -173,11 +214,17 @@ def new_bed(bed_file, output_file=f'./intermediate_file.bed'):
 
 def global_overlap_distribution(data, percentage):
     """
-    Create a histogram of the base pair overlapping in the BED file
-    Input: List of sorted overlap values
-    Output: Histogram
+        Create a histogram of the base pair overlapping in the BED file
+
+        Parameters:
+        - data: list of all overlapping DNA positions
+        - percentage: percentage of overlapping
+
+        Output:
+        - PNG file of the histogram plot
     """
-    plt.hist(data, bins=200, color='skyblue', edgecolor='black') # bins determines the number of bars in the histogram
+
+    plt.hist(data, bins=200, color='skyblue', edgecolor='black') 
     plt.xlabel('Number of Base Pair Overlap')
     plt.ylabel('Frequency')
     plt.title(f'Overlap Distribution ({percentage}%)')
