@@ -40,8 +40,5 @@ The analysis directory includes several Jupyter Notebooks designed for visualizi
 - **Description**: Enables visualization of the class proportions (0 and 1) and the probability distribution of train and validation values for the loss.
 - **Purpose**: To assess the model's ability to classify and predict by examining the distribution of probabilities and class proportions.
 
-### Score_motif.ipynb
-- **Description**: Allows for the visualization of the activity of a particular motif.
-- **Purpose**: To analyze and interpret the significance and activity of specific motifs in the context of the model's predictions.
 
 
