@@ -3,6 +3,7 @@ import warnings
 import logging
 import os
 import multiprocessing
+from shap_functions import shap_sequence_analysis
 
 ###############################################################################
 # removes tensorflow and shap warning messages, leaving only potential errors #
