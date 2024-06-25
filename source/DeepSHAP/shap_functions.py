@@ -4,13 +4,10 @@ import shap
 from keras.models import load_model
 shap.explainers._deep.deep_tf.op_handlers["AddV2"] = shap.explainers._deep.deep_tf.passthrough
 from deeplift.dinuc_shuffle import dinuc_shuffle
-import sys
 import multiprocessing
 from tqdm import tqdm
 import gc
-import logging
-import os
-import warnings
+
 
 
 def one_hot_encode(sequences):
