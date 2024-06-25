@@ -4,6 +4,11 @@ from analyse_function import calculate_overlap_percentage, global_overlap_distri
 
 warnings.filterwarnings('ignore')
 
+"""
+Script that calculates the percentage of overlap between chromosome positions (extended to 1344 bp) within a BED file. 
+Possibility to visualize the global overlap distribution through a histogram as well as a chromosome-by-chromosome visualization. 
+"""
+
 
 def overlapp(bed_file, plot = False):
     overlap_percentage, overlap_bp, overlap_chr = calculate_overlap_percentage(bed_file)
