@@ -12,9 +12,15 @@ import gc
 
 def one_hot_encode(sequences):
     """
-    Input: DNA sequence
-    Output: DNA sequence onehot encoded
+        One-hot encode the input sequence
+
+        Parameters:
+        - sequences: DNA sequence
+        
+        Output:
+        - One-hot encoded DNA sequence
     """
+
     one_hot = np.zeros((sequences.shape[0], sequences.shape[1], 4), dtype=np.float32)
 
     for i in range(4):
@@ -24,16 +30,27 @@ def one_hot_encode(sequences):
 
 def shuffle_several_times(s):
     """
-    Input: DNA sequence one hot encoded
-    Output: DNA sequence X time shuffeld
+        Shuffle the input sequence x times
+
+        Parameters:
+        - s: One-hot encoded sequence
+
+        Output:
+        - x shuffled one-hot encoded sequences
     """
+
     s = np.squeeze(s)
     return dinuc_shuffle(s, num_shufs=100)
 
 def open_file(file_path):
     """
-    Input: file path in h5 format
-    Output: data matrix contained in file table X 
+        Extract the data matrix contained in the h5 file
+
+        Parameters:
+        - file_path: h5 file path
+
+        Output: 
+        - Data matrix contained in file as table X
     """
 
     with h5py.File(file_path, 'r') as f:
@@ -42,9 +59,16 @@ def open_file(file_path):
 
 def shap_values(seqs_to_explain, model_path):
     """
-    Input: DNA sequence one hot encoded and model path
-    Output: DNA sequence with shapley values and DNA sequence one hot encoded
+        Calculate the Shapley values for a given sequence 
+
+        Parameters:
+        - seqs_to_explain: One-hot encoded DNA sequence
+        - model_path: Path to the trained model 
+
+        Output:
+        - DNA sequence with Shapley values and one-hot encoded DNA sequence
     """
+
     model = load_model(model_path)
 
     # the reference to explain the sequences
@@ -62,9 +86,18 @@ def shap_values(seqs_to_explain, model_path):
 
 def save_incremental_npz(shapley_values, seqs_to_explain, shapley_filename, seqs_filename):
     """
-    Input: an encoded one-hot sequence and the shapley values corresponding to this sequence 
-    Output: 2 npz files. One for the sequence and one for its shapley values.
+        Saves shapley value results and their corresponding sequences in two npz files 
+
+        Parameters:
+        - shapley_values: Shapley values corresponding to the one-hot encoded sequence
+        - seqs_to_explain: One-hot encoded sequence
+        - shapley_filename: Name of the Shapley file
+        - seqs_filename: Name of the sequence file
+
+        Output:
+        - Two npz files: One for the sequence and one for its Shapley values
     """
+
     # Save shapley values incrementally
     try:
         existing_shapley = np.load(shapley_filename)['arr_0']
@@ -85,10 +118,19 @@ def save_incremental_npz(shapley_values, seqs_to_explain, shapley_filename, seqs
 
 def task(args):
     """
-    Function used for parallelization which uses the shap_value function 
-    to calculate the shapley values of the input sequence. 
-    It then formats them in the correct dimension so that they can be saved 
-    with the save_incremental_npz function. 
+
+        Function used for parallelization which uses the shap_value function 
+        to calculate the shapley values of the input sequence.It then formats
+        them in the correct dimension so that they can be saved 
+        with the save_incremental_npz function.  
+
+        Parameters:
+        - args : tuple of sequence and model path
+
+        Output:
+        - DNA sequence with Shapley values and one-hot encoded DNA sequence
+
+    
     """
     i, model = args
     shapley_values, seqs_to_explain = shap_values(i, model)
@@ -103,7 +145,9 @@ def task(args):
 
 def shap_sequence_analysis(data_path, model_path, process, output_folder, data_range):
     """
-    Input : 
+    Main function to calculate the shapley values and save them in a npz file 
+    
+    Parameters : 
     - Path to the dataset containing the sequences to be analyzed
     - Path to trained model
     - Number of tasks to be run in parallel (see note)
@@ -127,4 +171,3 @@ def shap_sequence_analysis(data_path, model_path, process, output_folder, data_r
             save_incremental_npz(shapley_values, seqs_to_explain, shapley_filename, seqs_filename)
 
             gc.collect()
-
