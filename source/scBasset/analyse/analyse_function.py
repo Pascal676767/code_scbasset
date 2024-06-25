@@ -191,6 +191,7 @@ def adjust_bed_position(start, end, seq_len = 1344):
         seq_start = 0
     return seq_start, seq_end
 
+
 def new_bed(bed_file, output_file=f'./intermediate_file.bed'):
     """
         Create a new BED file with adjusted positions
@@ -231,24 +232,40 @@ def global_overlap_distribution(data, percentage):
     plt.xticks(range(0, 1345, 100)) 
     plt.savefig('./global_distribution.png', format='png')
 
+
 def natural_sort_key(s):
-    """Clé de tri naturel pour trier les chromosomes par ordre numérique."""
+    """
+        Sort the dictionary keys by numerical order
+
+        Parameters:
+        - s: dictionary with keys to sort
+
+        Output:
+        - Ordered dictionary keys
+    """
+
     return [int(text) if text.isdigit() else text.lower() for text in re.split('([0-9]+)', s)]
 
 
 def chr_overlap_distribution(overlap_chr, percentage):
     """
-    Create a density plot for the base pair overlap distribution from a BED file for each chromosome.
-    Input: Dictionary with 'chrom' as keys and [list of values] as values.
-    Output: Density plot for each chromosome's base pair overlap.
+        Create a density plot for the base pair overlap distribution from a BED file for each chromosome.
+
+        Parameters:
+        - overlap_chr: Dictionary with 'chrom' as keys and [list of overlaps] as values.
+        - percentage: percentage of global overlap
+
+        Output:
+        - Density plot for each chromosome's base pair overlap.
     """
+
     plt.figure(figsize=(10, 6))
     palette = sns.color_palette("husl", len(overlap_chr))
 
     sorted_chromosomes = sorted(overlap_chr.keys(), key=natural_sort_key)
     
     # Loop through each chromosome and its corresponding values in the dictionary
-    legend_elements = []  # list to hold the legend elements
+    legend_elements = []  
     for i, chrom in enumerate(sorted_chromosomes):
         values = overlap_chr[chrom]
         # Convert values to numeric data
@@ -272,9 +289,13 @@ def chr_overlap_distribution(overlap_chr, percentage):
 
 def calculate_overlap_percentage(bed_file):
     """
-    Calculate the percentage of overlap in the given BED file
-    Input: BED file
-    Output: Percentage
+        Calculate the percentage of overlap in the given BED file
+
+        Parameters:
+        - bed_file: BED file
+
+        Output:
+        - Percentage of overlap in the BED file
     """
 
     a = pybedtools.BedTool(bed_file)
