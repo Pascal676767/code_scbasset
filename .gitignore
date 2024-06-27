@@ -1,3 +1,4 @@
-source/train_model.sh
-source/make_train_data.sh
-source/prepro_SCAFE.sh
+source/batch_script/train_model.sh
+source/batch_script/make_train_data.sh
+source/batch_script/modisco_lite.sh
+source/batch_script/shap.sh
