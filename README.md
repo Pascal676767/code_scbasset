@@ -2,6 +2,7 @@
 
 # Architecture
 
+```
 ├── README.md
 ├── source
 │   ├── batch_script
@@ -23,7 +24,7 @@
 │   │       ├── Controle_shuffle.py
 │   │       ├── preprocessing_function.py
 └── test
-
+```
 
 # Source Folder
 
