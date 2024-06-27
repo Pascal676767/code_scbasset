@@ -1,6 +1,12 @@
 # Quick start
 
+To be able to train your model on enhancer, promoter or other sequences, it must be in the form of a cvs (row: DNA position with start and end, column: the various samples).
 
+Then use the following command:
+
+```
+python CAGE_preprocessing.py [CSV.file], [filter rate] --option
+```
 
 
 
