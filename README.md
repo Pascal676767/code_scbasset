@@ -1,4 +1,4 @@
-# Quick start
+# QUICK START
 
 ### Preprocessing
 
@@ -48,7 +48,7 @@ You can now use [tfModisco-lite](https://github.com/jmschrei/tfmodisco-lite) wit
 
 
 
-# code_scbasset
+# CODE
 
 # Architecture
 
