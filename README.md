@@ -2,13 +2,14 @@
 
 ### Preprocessing
 
-| Position | Sample 1 | Sample 2 |
-|----------|----------|----------|
-| chr:xxxx-xxxx:+ | activity | activity |
-| chr:xxxx-xxxx:+ | activity | activity |
-| chr:xxxx-xxxx:- | activity | activity |
+The starting csv file must be in this form (row: DNA position with start, end and strand, column: the various samples)
 
-To be able to train your model on enhancer, promoter or other sequences, it must be in the form of a cvs (row: DNA position with start and end, column: the various samples).
+| Position | Sample 1 | Sample 2 | ........ | Sample n |
+|----------|----------|----------|----------|----------|
+| chr:xxxx-xxxx:+ | activity | activity | ........ | activity |
+| chr:xxxx-xxxx:+ | activity | activity | ........ | activity |
+| chr:xxxx-xxxx:- | activity | activity | ........ | activity |
+
 
 Then use the following command:
 
