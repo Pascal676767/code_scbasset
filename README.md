@@ -1,5 +1,7 @@
 # Quick start
 
+### Preprocessing
+
 To be able to train your model on enhancer, promoter or other sequences, it must be in the form of a cvs (row: DNA position with start and end, column: the various samples).
 
 Then use the following command:
@@ -10,12 +12,28 @@ python CAGE_preprocessing.py [CSV.file], [filter rate] --option
 
 You should now have 3 different files: cage.bed, count_matrix.h5, count_matrix_filtered.h5
 
-You now need to download and install the modified version of scBasset available [here](https://github.com/Pascal676767/scBasset)
+You now need to download and install the modified version of scBasset available [here](https://github.com/Pascal676767/scBasset).
 Refer to part 3. of the Readme of the modified version of scBasset to generate training data from the cage.bed and count_matrix_filtered.h5 files.
 
+### Training
 
+Refer to part 4. of the Readme of the modified version of scBasset to train the model.
 
+### Analysis
 
+Once the model has been trained, use the following command on the history.pickle file:
+```
+python AUC_Loss.py [history.pickle] --option
+```
+You should now have an AUC_Loss.png file that lets you view the AUC and Loss on the training and validation data.
+
+To access the embedding view, use the following command:
+```
+python [count_matrix_filtered.h5], [trained model], [csv_hormone]
+```
+You should now have 3 png files (leiden, patients vs cell lines, hormone status)
+
+### DeepSHAP
 
 # code_scbasset
 
