@@ -9,7 +9,7 @@
 # Wall time limit:
 #SBATCH --time=00:10:00
 
-#SBATCH --mem=4G
+#SBATCH --mem=8G
 
 # Set the output of the slurmfile
 #SBATCH --output=/fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/results_scbasset/log/output-%j.txt
@@ -26,9 +26,9 @@ module list
 source /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/Basset_tool/bin/activate
 
 ##go to the directory
-cd /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/results_scbasset/enhancer_patient/processed/chr_exclusion_filtered
+cd /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/results_scbasset/enhancer/processed/test_new
 
 
 
 ## Do some work:
-python /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/scBasset/bin/scbasset_preprocess.py --ad_file ../../data/filtered/cage_enhancer_patient_ad.h5ad --input_fasta /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/scBasset/data/hg38.fa
+python /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/scBasset/bin/scbasset_preprocess.py --ad_file ../../data/filtered/cage_enhancer_ad.h5ad --input_fasta /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/scBasset/data/hg38.fa  --chromosomes chr5 chr14 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Job name:
-#SBATCH --job-name=enh_2051_3500
+#SBATCH --job-name=pro_1056_2355
 
 # Project:
 #SBATCH --account=ec31
@@ -32,4 +32,4 @@ cd /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/ex_shap
 
 
 ## Do some work:
-python ../code_scbasset/source/DeepSHAP/shap_multiprocessing.py data/enhancer/test_seqs.h5 data/enhancer/best_model.h5 5 2051 3500 batch_enhancer_shuffle100_v2
+python ../code_scbasset/source/DeepSHAP/shap_multiprocessing.py data/promotor/val_seqs.h5 data/promotor/best_model.h5 5 1 1450 batch_promotor_shuffle100
