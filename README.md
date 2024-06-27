@@ -29,11 +29,24 @@ You should now have an AUC_Loss.png file that lets you view the AUC and Loss on 
 
 To access the embedding view, use the following command:
 ```
-python [count_matrix_filtered.h5], [trained model], [csv_hormone]
+python embedding.py [count_matrix_filtered.h5], [trained model], [csv_hormone]
 ```
 You should now have 3 png files (leiden, patients vs cell lines, hormone status)
 
 ### DeepSHAP
+
+To extract what the model has learned from the sequence, we use the DeepSHAP tool. Note that it requires a lot of memory. See note on the script 'shap_multiprocessing.py'.
+Use the following command
+```
+python shap_multiprocessing.py [training, validation or test sequence], [trained model], [core number for parallelization (see note)], [start seq number], [end seq number].
+```
+You should now have two npz files: seqs_to_explain.npz and shapley_values.npz
+
+### tfModisco-lite
+
+You can now use [tfModisco-lite](https://github.com/jmschrei/tfmodisco-lite) with both npz files as input.
+
+
 
 # code_scbasset
 
