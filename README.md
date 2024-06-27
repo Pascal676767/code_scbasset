@@ -2,6 +2,12 @@
 
 ### Preprocessing
 
+| Position | Sample 1 | Sample 2 |
+|----------|----------|----------|
+| chr:xxxx-xxxx:+ | activity | activity |
+| chr:xxxx-xxxx:+ | activity | activity |
+| chr:xxxx-xxxx:- | activity | activity |
+
 To be able to train your model on enhancer, promoter or other sequences, it must be in the form of a cvs (row: DNA position with start and end, column: the various samples).
 
 Then use the following command:
@@ -13,7 +19,7 @@ python CAGE_preprocessing.py [CSV.file], [filter rate] --option
 You should now have 3 different files: cage.bed, count_matrix.h5, count_matrix_filtered.h5
 
 You now need to download and install the modified version of scBasset available [here](https://github.com/Pascal676767/scBasset).
-Refer to part 3. of the Readme of the modified version of scBasset to generate training data from the cage.bed and count_matrix_filtered.h5 files.
+Refer to part 3. of the Readme of the modified version of scBasset to generate training data from the count_matrix_filtered.h5 files.
 
 ### Training
 
