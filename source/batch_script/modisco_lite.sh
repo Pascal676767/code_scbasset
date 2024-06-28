@@ -33,6 +33,6 @@ cd /fp/projects01/ec31/mathelier-group/pascalo/scBasset_internship/ex_shap/batch
 
 ## Do some work:
 
-modisco motifs -s seqs_to_explain_concatened.npz -a  shapley_values_concatened.npz -n 2000 -o modisco_results.h5
+modisco motifs -s seqs_to_explain_final.npz -a  shapley_values_final.npz -n 2000 -o modisco_results.h5
 
-# modisco report -i modisco_results.h5 -o report/ -s report/ -m ../data/motifs.txt
+modisco report -i modisco_results.h5 -o report/ -s report/ -m ../data/motifs.txt
