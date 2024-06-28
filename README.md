@@ -38,6 +38,15 @@ To access the embedding view, use the following command:
 ```
 python embedding.py [count_matrix_filtered.h5], [trained model], [csv_hormone] --option
 ```
+
+Please note that the csv containing the hormonal information must be in the following form:
+
+|  Sample_id  |  Oestrogen  | progesteron |     her2    |
+|-------------|-------------|-------------|-------------|
+|   Sample1   |      1      |      1      |      0      | 
+|   Sample2   |      0      |      1      |      1      |
+|   Sample3   |      1      |      0      |      1      |
+
 You should now have 3 png files (leiden, patients vs cell lines, hormone status)
 
 ### DeepSHAP
