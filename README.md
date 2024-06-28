@@ -36,7 +36,7 @@ You should now have an AUC_Loss.png file that lets you view the AUC and Loss on 
 
 To access the embedding view, use the following command:
 ```
-python embedding.py [count_matrix_filtered.h5], [trained model], [csv_hormone]
+python embedding.py [count_matrix_filtered.h5], [trained model], [csv_hormone] --option
 ```
 You should now have 3 png files (leiden, patients vs cell lines, hormone status)
 
