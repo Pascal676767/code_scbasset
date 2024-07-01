@@ -40,7 +40,7 @@ def shuffle_several_times(s):
     """
 
     s = np.squeeze(s)
-    return dinuc_shuffle(s, num_shufs=1)
+    return dinuc_shuffle(s, num_shufs=100)
 
 def open_file(file_path):
     """
