@@ -40,7 +40,7 @@ def shuffle_several_times(s):
     """
 
     s = np.squeeze(s)
-    return dinuc_shuffle(s, num_shufs=100)
+    return dinuc_shuffle(s, num_shufs=1)
 
 def open_file(file_path):
     """
@@ -82,7 +82,11 @@ def shap_values(seqs_to_explain, model_path):
     # averages all shapley values at a given position 
     dinuc_shuff_explanations = (np.sum(raw_shap_explanations, axis=-1)[:, :] * seqs_to_explain)
 
-    return dinuc_shuff_explanations, seqs_to_explain
+    shapley_values = np.transpose(dinuc_shuff_explanations, (0, 2, 1))
+    seqs_to_explain = np.transpose(seqs_to_explain, (0, 2, 1))
+
+
+    return shapley_values, seqs_to_explain
 
 def save_incremental_npz(shapley_values, seqs_to_explain, shapley_filename, seqs_filename):
     """
@@ -120,9 +124,7 @@ def task(args):
     """
 
         Function used for parallelization which uses the shap_value function 
-        to calculate the shapley values of the input sequence.It then formats
-        them in the correct dimension so that they can be saved 
-        with the save_incremental_npz function.  
+        to calculate the shapley values of the input sequence. 
 
         Parameters:
         - args : tuple of sequence and model path
@@ -134,12 +136,6 @@ def task(args):
     """
     i, model = args
     shapley_values, seqs_to_explain = shap_values(i, model)
-
-    shapley_values = np.squeeze(shapley_values)
-    seqs_to_explain = np.squeeze(seqs_to_explain)
-
-    shapley_values = np.expand_dims(shapley_values, axis=0)
-    seqs_to_explain = np.expand_dims(seqs_to_explain, axis=0)
 
     return shapley_values, seqs_to_explain
 
