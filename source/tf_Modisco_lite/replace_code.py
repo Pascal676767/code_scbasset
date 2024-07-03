@@ -59,11 +59,9 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    # Exécution des fonctions
     motif_dict = parse_motif_file(args.motif_file)
     modified_html = replace_motif_names(args.html_file, motif_dict)
 
-    # Écrire le fichier HTML modifié
     with open(args.output, 'w', encoding='utf-8') as f:
         f.write(modified_html)
 
