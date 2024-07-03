@@ -89,7 +89,10 @@ You can now use [tfModisco-lite](https://github.com/jmschrei/tfmodisco-lite) wit
 │   │       ├── CAGE_preprocessing.py
 │   │       ├── Controle_shuffle.py
 │   │       ├── preprocessing_function.py
+│   └── tf_modisco_lite
+│       └── replace.py
 └── test
+
 ```
 
 
