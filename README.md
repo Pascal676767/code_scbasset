@@ -144,5 +144,10 @@ Possibility to visualize the global overlap distribution through a histogram as 
 - **Output**: Two NPZ files (one with original sequences, one with the corresponding Shapley values)
 
 
+# tf_modisco_lite
 
+### replace_code.py
+- **Description**: Script that replaces motif codes with the actual motif names in the HTML output from tfModisco-lite.
+- **Input**: Motif file (txt), HTML file
+- **Output**: New HTML file with the codes replaced by the actual names
 
