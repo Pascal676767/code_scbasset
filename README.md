@@ -14,7 +14,7 @@ The starting csv file must be in this form (row: DNA position with start, end an
 Then use the following command:
 
 ```
-python CAGE_preprocessing.py [CSV.file], [filter rate] --option
+python CAGE_preprocessing.py [CSV.file] [filter rate] --option
 ```
 
 You should now have 3 different files: cage.bed, count_matrix.h5, count_matrix_filtered.h5
@@ -36,7 +36,7 @@ You should now have an AUC_Loss.png file that lets you view the AUC and Loss on 
 
 To access the embedding view, use the following command:
 ```
-python embedding.py [count_matrix_filtered.h5], [trained model], [csv_hormone] --option
+python embedding.py [count_matrix_filtered.h5] [trained model] [csv_hormone] --option
 ```
 
 Please note that the csv containing the hormonal information must be in the following form:
@@ -54,7 +54,7 @@ You should now have 3 png files (leiden, patients vs cell lines, hormone status)
 To extract what the model has learned from the sequence, we use the DeepSHAP tool. Note that it requires a lot of memory. See note on the script 'shap_multiprocessing.py'.
 Use the following command
 ```
-python shap_multiprocessing.py [training, validation or test sequence], [trained model], [core number for parallelization (see note)], [start seq number], [end seq number].
+python shap_multiprocessing.py [training, validation or test sequence] [trained model] [core number for parallelization (see note)] [start seq number] [end seq number]
 ```
 You should now have two npz files: seqs_to_explain.npz and shapley_values.npz
 
