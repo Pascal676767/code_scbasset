@@ -362,7 +362,9 @@ def calculate_overlap_percentage(bed_file):
         - overlapping per chromosomes
     """
 
-    a = pybedtools.BedTool(bed_file)
+    new_bed_file = new_bed(bed_file)
+
+    a = pybedtools.BedTool(new_bed_file)
     
     # Calculate overlap between features in the BED file
     overlaps = a.intersect(a, wo=True)
